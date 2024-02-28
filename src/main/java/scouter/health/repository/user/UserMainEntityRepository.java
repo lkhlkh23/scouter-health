@@ -1,4 +1,4 @@
-package scouter.health.repository;
+package scouter.health.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
