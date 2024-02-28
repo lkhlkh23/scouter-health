@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/view")
-public class ViewCalendarController {
+public class ViewLoginController {
 
-	@GetMapping("/calendar")
-	public String viewCalendar() {
-		return "view/calendar";
+	@GetMapping("/login")
+	public String viewLogin() {
+		return "view/login";
 	}
-
 }

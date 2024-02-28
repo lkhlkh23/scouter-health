@@ -2,7 +2,8 @@ package scouter.health.infra.common;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
+import javax.persistence.Column;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUI Calendar Example</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+    <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 50%;
+          position: relative; /* 부모 요소를 relative로 설정 */
+        }
+
+        .close {
+          color: #aaa;
+          position: absolute; /* 절대 위치 설정 */
+          top: 0; /* 부모 요소 상단에 배치 */
+          right: 0; /* 부모 요소 오른쪽에 배치 */
+          font-size: 28px;
+          font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <img src="body.png" alt="Image" class="img-fluid">
+            </div>
+            <div class="col-md-4" style="background-color: orange;">
+                <div>
+                    <div class="row mb-2">
+                        <div class="col-6">part</div>
+                        <div class="col-6">power</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between mb-3">
+                    <button id="prevBtn" class="btn btn-primary">이전</button>
+                    <div id="calendar-header"></div>
+                    <button id="nextBtn" class="btn btn-primary">다음</button>
+                </div>
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalBody"></p>
+        </div>
+    </div>
+
+    <div id="add-exercise-modal" class="modal">
+        <div class="modal-content">
+            <div class="row mb-3">
+                <div class="col">
+                    <h5 class="modalTitle">오늘의 운동 추가</h5>
+                </div>
+                <div class="col-auto">
+                    <button id="add-exercise" class="btn btn-primary">운동 추가</button>
+                </div>
+            </div>
+            <div id="exercise-input">
+
+
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-auto pe-1">
+                    <button id="exit-add-exercise" class="btn btn-danger">일정 취소</button>
+                </div>
+                <div class="col-auto">
+                    <button id="add-exercise-schedule" class="btn btn-primary">일정 추가</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            // 모달 운동 추가
+            $('#add-exercise').click(function() {
+                $('#exercise-input').append($('#add-exercise-template').html());
+            });
+
+            // 모달 운동 삭제
+            $(document).on('click', '.delete-exercise', function() {
+                $(this).closest('.row').remove();
+            });
+
+            // 모달 닫기
+            $('#exit-add-exercise').click(function() {
+                $('#exercise-input').empty();
+                $('#add-exercise-modal').hide();
+            });
+        });
+        const container = document.getElementById('calendar');
+        const options = {
+          defaultView: 'month',
+          useFormPopup: false,
+          useDetailPopup: false,
+          timezone: {
+            zones: [
+              {
+                timezoneName: 'Asia/Seoul',
+                displayLabel: 'Seoul',
+              }
+            ],
+          },
+          week: {
+            startDayOfWeek: 0 // 일요일부터 시작
+          },
+          month: {
+            daynames: ['일', '월', '화', '수', '목', '금', '토'],
+            startDayOfWeek: 0,
+            isAlways6Week: false
+          }
+        };
+
+        const calendar = new tui.Calendar(container, options);
+        calendar.createSchedules([
+          {
+            id: '1',
+            calendarId: 'cal1', // 개인 캘린더에 속함
+            title: '개인 일정',
+            body: 'fdfdffd',
+            category: 'time',
+            start: '2024-02-25',
+            bgColor: 'red'
+          },
+        ]);
+
+        calendar.on('clickSchedule', function(ev) {
+            const schedule = ev.schedule;
+            const modal = $('#myModal');
+            const modalTitle = $('#modalTitle');
+            const modalBody = $('#modalBody');
+            const span = $('.close').eq(0);
+
+            modalTitle.text(schedule.title);
+            modalBody.text(schedule.body);
+            modal.css('display', 'block');
+
+            span.on('click', function() {
+                modal.css('display', 'none');
+            });
+
+            $(window).on('click', function(event) {
+                if (event.target == modal[0]) {
+                    modal.css('display', 'none');
+                }
+            });
+        });
+
+        // 일정 등록
+         calendar.on('beforeCreateSchedule', function(ev) {
+            // 선택된 셀 비활성화
+            $('.tui-full-calendar-month-creation-guide').removeAttr('style');
+
+            // 모달 열기
+            $('#add-exercise-modal').show();
+
+            // 모달 바깥 클릭 시 모달 닫기
+            $(window).click(function(event) {
+                if (event.target == $('#add-exercise-modal')[0]) {
+                    $('#exercise-input').empty();
+                    $('#add-exercise-modal').hide();
+                }
+            });
+        });
+
+        function updateHeader() {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = today.getMonth() + 1;
+          $('#calendar-header').text(`${year}년 ${month}월`);
+        }
+
+        $('#prevBtn').on('click', function() {
+          calendar.prev();
+          updateHeader();
+        });
+
+        $('#nextBtn').on('click', function() {
+          calendar.next();
+          updateHeader();
+        });
+
+        updateHeader();
+
+    </script>
+
+    <script type="text/x-handlebars-template" id="add-exercise-template">
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <select class="exercise-sort form-control">
+                    <option>운동 1</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-weight form-control" size="3" maxlength="3" placeholder="중량">
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-set form-control" size="3" maxlength="3" placeholder="세트">
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-count form-control" size="3" maxlength="3" placeholder="반복">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="delete-exercise btn btn-danger">-</button>
+            </div>
+        </div>
+    </script>
+</body>
+</html>
