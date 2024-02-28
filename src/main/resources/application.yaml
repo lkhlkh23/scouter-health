@@ -1,1 +1,30 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      force-response: true
 
+spring:
+  mustache:
+    suffix: .html
+  profiles:
+    include: security
+  datasource:
+    type : com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://dob.chndqnkvmxqr.ap-northeast-2.rds.amazonaws.com:3306/health?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&socketTimeout=8000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: app
+    password: ENC(Sgmg6+7Udv9F4FCH+7ofJJgsMnLOSBEu)
+    hikari:
+      pool-name: PlanAuroraDB
+      maximum-pool-size: 40
+      validation-timeout: 1000
+      connection-timeout: 1000
+      connection-test-query: select 1 from dual
+      data-source-properties:
+        socketTimeout: 8000
+
+jasypt:
+  encryptor:
+    password: health
+    bean: standardPBEStringEncryptor
