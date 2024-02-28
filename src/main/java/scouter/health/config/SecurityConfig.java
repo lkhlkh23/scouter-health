@@ -1,12 +1,8 @@
 package scouter.health.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.web.SecurityFilterChain;
 
 import lombok.RequiredArgsConstructor;
 import scouter.health.service.CustomOAuth2UserService;
@@ -24,7 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.headers().frameOptions().disable()
 			.and()
 			.authorizeRequests()
-			.antMatchers("/css/**", "/js/**", "/img/**").permitAll()
+			.antMatchers("/css/**", "/js/**", "/img/**", "/view/**").permitAll()
+			// .antMatchers("/view/calendar").hasRole(UserRoleType.NORMAL.getRole())
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()

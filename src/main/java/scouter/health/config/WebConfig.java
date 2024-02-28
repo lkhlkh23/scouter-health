@@ -1,9 +1,14 @@
 package scouter.health.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import scouter.health.filter.LoginUserHandlerMethodArgumentResolver;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -20,6 +25,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/img/");
         registry.addResourceHandler("/templates/***")
                 .addResourceLocations("classpath:/templates/");
+    }
+
+    @Override
+    public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginUserHandlerMethodArgumentResolver());
     }
 
 }

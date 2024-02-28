@@ -22,7 +22,6 @@ class JasyptConfigTest {
 		final String result = sut.encrypt(text);
 
 		// then
-		System.out.println(result + "~~~~~~~~");
 		assertNotNull(result);
 	}
 }
