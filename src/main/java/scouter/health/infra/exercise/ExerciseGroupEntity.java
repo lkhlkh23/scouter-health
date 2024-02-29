@@ -25,6 +25,9 @@ public class ExerciseGroupEntity {
 	@Column(name = "exercise_nm")
 	private String exerciseName;
 
+	@Column(name = "exercise_kind")
+	private String exerciseKind;
+
 	@Convert(converter = BooleanToYNConverter.class)
 	@Column(name = "use_yn")
 	private boolean usable;

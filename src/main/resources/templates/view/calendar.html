@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TUI Calendar Example</title>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
     <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
     <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
     <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
@@ -89,8 +91,11 @@
                 <div class="col">
                     <h5 class="modalTitle">오늘의 운동 추가</h5>
                 </div>
+                <div class="col-auto pe-1">
+                    <button id="add-anaerobic-exercise" class="btn btn-success">무산소</button>
+                </div>
                 <div class="col-auto">
-                    <button id="add-exercise" class="btn btn-primary">운동 추가</button>
+                    <button id="add-aerobic-exercise" class="btn btn-info">유산소</button>
                 </div>
             </div>
             <div id="exercise-input">
@@ -108,23 +113,60 @@
         </div>
     </div>
     <script>
+        const aerobics = [];
+        const anaerobics = [];
         $(document).ready(function() {
-            // 모달 운동 추가
-            $('#add-exercise').click(function() {
-                $('#exercise-input').append($('#add-exercise-template').html());
+            // 모달 무산소 운동 추가 이벤트
+            $('#add-anaerobic-exercise').click(function() {
+                let data = {
+                    'exercises': anaerobics
+                };
+                let compiled = Mustache.render($('#add-anaerobic-exercise-template').html(), data);
+                $('#exercise-input').append(template(data));
             });
 
-            // 모달 운동 삭제
+            // 모달 유산소 운동 추가 이벤트
+            $('#add-aerobic-exercise').click(function() {
+                let data = {
+                    'exercises': aerobics
+                };
+                $('#exercise-input').append(Mustache.render($('#add-aerobic-exercise-template').html(), data));
+            });
+
+            // 모달 운동 삭제 이벤트
             $(document).on('click', '.delete-exercise', function() {
                 $(this).closest('.row').remove();
             });
 
-            // 모달 닫기
+            // 모달 닫기 이벤트
             $('#exit-add-exercise').click(function() {
                 $('#exercise-input').empty();
                 $('#add-exercise-modal').hide();
             });
+
+            // 모달 운동목록 조회 설정
+            $.ajax({
+                url: "/v1/api/exercises",
+                method: "GET",
+                success: function(response) {
+                    response.forEach(function(exercise) {
+                        if(exercise.exerciseKind === '01') {
+                            anaerobics.push(exercise);
+                        }
+
+                        if(exercise.exerciseKind === '02') {
+                            aerobics.push(exercise);
+                            let option = $('<option>').text('123');
+                            $('#add-aerobic-exercise-template .exercise-sort').append(option);
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("에러 발생:", error);
+                }
+            });
         });
+
         const container = document.getElementById('calendar');
         const options = {
           defaultView: 'month',
@@ -221,11 +263,13 @@
 
     </script>
 
-    <script type="text/x-handlebars-template" id="add-exercise-template">
+    <script type="text/x-handlebars" id="add-anaerobic-exercise-template">
         <div class="row mb-3">
             <div class="col-md-5">
                 <select class="exercise-sort form-control">
-                    <option>운동 1</option>
+                    [[#exercises]]
+                        <option>운동 1</option>
+                    [[/exercises]]
                 </select>
             </div>
             <div class="col-md-2">
@@ -236,6 +280,29 @@
             </div>
             <div class="col-md-2">
                 <input type="text" class="exercise-count form-control" size="3" maxlength="3" placeholder="반복">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="delete-exercise btn btn-danger">-</button>
+            </div>
+        </div>
+    </script>
+    <script type="text/x-handlebars-template" id="add-aerobic-exercise-template">
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <select class="exercise-sort form-control">
+                    {{#exercises}}
+                        <option>운동 1</option>
+                    {{/exercises}}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-weight form-control" size="3" maxlength="3" placeholder="중량">
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-speed form-control" size="3" maxlength="3" placeholder="속도">
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="exercise-time form-control" size="3" maxlength="3" placeholder="시간">
             </div>
             <div class="col-md-1">
                 <button type="button" class="delete-exercise btn btn-danger">-</button>

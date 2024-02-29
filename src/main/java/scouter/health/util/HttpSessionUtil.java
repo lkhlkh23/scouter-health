@@ -8,7 +8,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import scouter.health.model.User;
+import scouter.health.model.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpSessionUtil {

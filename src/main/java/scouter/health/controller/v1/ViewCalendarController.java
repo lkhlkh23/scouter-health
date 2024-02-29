@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import scouter.health.filter.LoginUser;
-import scouter.health.model.User;
+import scouter.health.model.user.User;
 
 @Controller
-@RequestMapping("/view")
+@RequestMapping("/v1/view")
 public class ViewCalendarController {
 
 	@GetMapping("/calendar")

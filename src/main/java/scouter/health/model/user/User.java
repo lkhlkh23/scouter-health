@@ -1,4 +1,4 @@
-package scouter.health.model;
+package scouter.health.model.user;
 
 import static scouter.health.type.UserRoleType.*;
 

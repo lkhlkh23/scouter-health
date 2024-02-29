@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import scouter.health.infra.user.UserMainEntity;
-import scouter.health.model.User;
+import scouter.health.model.user.User;
 import scouter.health.repository.user.UserMainEntityRepository;
 import scouter.health.type.UserRoleType;
 import scouter.health.util.HttpSessionUtil;

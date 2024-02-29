@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import lombok.RequiredArgsConstructor;
 import scouter.health.service.CustomOAuth2UserService;
+import scouter.health.type.UserRoleType;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -20,12 +21,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.headers().frameOptions().disable()
 			.and()
 			.authorizeRequests()
-			.antMatchers("/css/**", "/js/**", "/img/**", "/view/**").permitAll()
-			// .antMatchers("/view/calendar").hasRole(UserRoleType.NORMAL.getRole())
+			.antMatchers("/css/**", "/js/**", "/img/**", "/v1/**").permitAll()
+			// .antMatchers("/v1/api/**").hasRole(UserRoleType.NORMAL.getRole())
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()
-			.defaultSuccessUrl("/view/calendar")
+			.defaultSuccessUrl("/v1/view/calendar")
 			.userInfoEndpoint()
 			.userService(oauthService);
 	}

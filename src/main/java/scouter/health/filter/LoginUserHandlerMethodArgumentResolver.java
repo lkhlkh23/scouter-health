@@ -6,7 +6,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import scouter.health.model.User;
+import scouter.health.model.user.User;
 import scouter.health.util.HttpSessionUtil;
 
 public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "user_exercise")
-public class UserExerciseEntity {
+public class UserAnaerobicExerciseEntity {
 
 	@Id
 	@Column(name = "user_exercise_id")
@@ -28,6 +28,15 @@ public class UserExerciseEntity {
 
 	@Column(name = "exercise_id")
 	private int exerciseId;
+
+	@Column(name = "exercise_weight")
+	private int exerciseWeight;
+
+	@Column(name = "exercise_set")
+	private int exerciseSet;
+
+	@Column(name = "exercise_repeat")
+	private int exerciseRepeat;
 
 	@Column(name = "created_date")
 	private LocalDateTime createdAt;
